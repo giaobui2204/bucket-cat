@@ -1,18 +1,31 @@
 use raylib::prelude::*;
 
+use crate::config;
+use crate::input::Input;
+use crate::game::world::World;
+use crate::render;
+
 pub fn run() {
     let (mut rl, thread) = raylib::init()
-        .size(420, 320)         
+        .size(config::SCREEN_W, config::SCREEN_H)
         .title("Bucket Catch")
         .resizable()
         .build();
 
-    rl.set_target_fps(120);
+    rl.set_target_fps(config::TARGET_FPS);
+
+    let mut world = World::new(config::SCREEN_W as f32, config::SCREEN_H as f32);
 
     while !rl.window_should_close() {
+        let dt = rl.get_frame_time();
+        let screen_w = rl.get_screen_width() as f32;
+        let screen_h = rl.get_screen_height() as f32;
+
+        let input = Input::gather(&rl);
+        world.update(&rl, input, dt, screen_w, screen_h);
+
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-
-        d.draw_text("Mini Window 🌱", 120, 140, 20, Color::RAYWHITE);
+        render::draw_world(&mut d, &world);
     }
 }
