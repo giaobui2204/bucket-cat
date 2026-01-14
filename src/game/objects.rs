@@ -12,16 +12,20 @@ pub enum CatKind {
 pub struct FallingObject {
     pub pos: Vector2,
     pub radius: f32,
+    velocity: Vector2,
+    accel: Vector2,
     kind: CatKind,
     anim_time: f32,
     anim_frame: usize,
 }
 
 impl FallingObject {
-    pub fn new(x: f32, kind: CatKind) -> Self {
+    pub fn new(x: f32, kind: CatKind, initial_speed: f32) -> Self {
         Self {
             pos: Vector2::new(x, -10.0),
             radius: config::OBJ_RADIUS,
+            velocity: Vector2::new(0.0, initial_speed),
+            accel: Vector2::new(0.0, config::OBJ_GRAVITY),
             kind,
             anim_time: 0.0,
             anim_frame: 0,
@@ -29,7 +33,9 @@ impl FallingObject {
     }
 
     pub fn update(&mut self, dt: f32) {
-        self.pos.y += config::OBJ_FALL_SPEED * dt;
+        self.velocity.y += self.accel.y * dt;
+        self.velocity.y = self.velocity.y.min(config::OBJ_MAX_SPEED);
+        self.pos.y += self.velocity.y * dt;
         if config::OBJ_FRAME_COUNT > 1 {
             let frame_dt = 1.0 / config::OBJ_ANIM_FPS.max(1.0);
             self.anim_time += dt;

@@ -16,6 +16,7 @@ impl Spawner {
         rl: &RaylibHandle,
         dt: f32,
         screen_w: f32,
+        elapsed_time: f32,
     ) -> Option<FallingObject> {
         self.timer += dt;
         if self.timer < config::SPAWN_INTERVAL {
@@ -29,6 +30,8 @@ impl Spawner {
             1 => CatKind::Angel,
             _ => CatKind::Devil,
         };
-        Some(FallingObject::new(x, kind))
+        let difficulty = 1.0 + elapsed_time * config::OBJ_SPEED_SCALE;
+        let initial_speed = config::OBJ_BASE_SPEED * difficulty;
+        Some(FallingObject::new(x, kind, initial_speed))
     }
 }
