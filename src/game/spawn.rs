@@ -1,6 +1,6 @@
 use raylib::prelude::*;
 use crate::config;
-use crate::game::objects::FallingObject;
+use crate::game::objects::{CatKind, FallingObject};
 
 pub struct Spawner {
     timer: f32,
@@ -24,6 +24,11 @@ impl Spawner {
 
         self.timer = 0.0;
         let x = rl.get_random_value::<i32>(20..(screen_w as i32 - 20)) as f32;
-        Some(FallingObject::new(x))
+        let kind = match rl.get_random_value::<i32>(0..3) {
+            0 => CatKind::Normal,
+            1 => CatKind::Angel,
+            _ => CatKind::Devil,
+        };
+        Some(FallingObject::new(x, kind))
     }
 }

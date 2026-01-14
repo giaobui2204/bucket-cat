@@ -14,9 +14,19 @@ pub fn run() {
 
     rl.set_target_fps(config::TARGET_FPS);
 
+    //access to the assets texture
     let bucket_texture = rl
         .load_texture(&thread, "src/assets/cat/bucket.png")
         .expect("load bucket texture");
+    let normal_texture = rl
+        .load_texture(&thread, "src/assets/cat/normalneko.png")
+        .expect("load normal neko texture");
+    let angel_texture = rl
+        .load_texture(&thread, "src/assets/cat/angelneko.png")
+        .expect("load angel neko texture");
+    let devil_texture = rl
+        .load_texture(&thread, "src/assets/cat/devilneko.png")
+        .expect("load devil neko texture");
 
     let mut world = World::new(config::SCREEN_W as f32, config::SCREEN_H as f32);
     let bucket_frame_w =
@@ -39,6 +49,13 @@ pub fn run() {
 
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        render::draw_world(&mut d, &world, &bucket_texture);
+        render::draw_world(
+            &mut d,
+            &world,
+            &bucket_texture,
+            &normal_texture,
+            &angel_texture,
+            &devil_texture,
+        );
     }
 }
