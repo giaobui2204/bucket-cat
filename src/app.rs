@@ -9,7 +9,6 @@ pub fn run() {
     let (mut rl, thread) = raylib::init()
         .size(config::SCREEN_W, config::SCREEN_H)
         .title("Bucket Catch")
-        .resizable()
         .build();
 
     rl.set_target_fps(config::TARGET_FPS);

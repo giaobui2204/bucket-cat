@@ -1,16 +1,16 @@
 // window
-pub const SCREEN_W: i32 = 420;
-pub const SCREEN_H: i32 = 320;
+pub const SCREEN_W: i32 = 640;
+pub const SCREEN_H: i32 = 480;
 pub const TARGET_FPS: u32 = 120;
 
 // bucket
 pub const BUCKET_W: f32 = 48.0;
-pub const BUCKET_H: f32 = 160.0;
+pub const BUCKET_H: f32 = 150.0;
 pub const BUCKET_ACCEL: f32 = 1800.0;
 pub const BUCKET_MAX_SPEED: f32 = 420.0;
 pub const BUCKET_FRICTION: f32 = 8.0;
-pub const BUCKET_Y_OFFSET: f32 = 40.0;
-pub const BUCKET_DRAW_SCALE: f32 = 1.2;
+pub const BUCKET_Y_OFFSET: f32 = 60.0;
+pub const BUCKET_DRAW_SCALE: f32 = 2.0;
 pub const BUCKET_FRAME_COUNT: usize = 2;
 pub const BUCKET_FRAME_COLS: i32 = 2;
 pub const BUCKET_FRAME_ROWS: i32 = 1;
