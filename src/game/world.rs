@@ -1,4 +1,5 @@
 use raylib::prelude::*;
+use crate::config;
 use crate::input::Input;
 
 use crate::game::bucket::Bucket;
@@ -9,6 +10,7 @@ pub struct World {
     pub bucket: Bucket,
     pub objects: Vec<FallingObject>,
     spawner: Spawner,
+    elapsed_time: f32,
 }
 
 impl World {
@@ -17,6 +19,7 @@ impl World {
             bucket: Bucket::new(screen_w, screen_h),
             objects: Vec::new(),
             spawner: Spawner::new(),
+            elapsed_time: 0.0,
         }
     }
 
@@ -28,9 +31,11 @@ impl World {
         screen_w: f32,
         screen_h: f32,
     ) {
-        self.bucket.update(input.move_x, dt, screen_w);
+        self.elapsed_time += dt;
+        let difficulty = 1.0 + self.elapsed_time * config::OBJ_SPEED_SCALE;
+        self.bucket.update(input.move_x, dt, screen_w, difficulty);
 
-        if let Some(obj) = self.spawner.update(rl, dt, screen_w) {
+        if let Some(obj) = self.spawner.update(rl, dt, screen_w, self.elapsed_time) {
             self.objects.push(obj);
         }
 
