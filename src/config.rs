@@ -18,10 +18,10 @@ pub const BUCKET_ANIM_FPS: f32 = 6.0;
 
 // falling object
 pub const OBJ_RADIUS: f32 = 8.0;
-pub const OBJ_GRAVITY: f32 = 900.0;
-pub const OBJ_BASE_SPEED: f32 = 80.0;
+pub const OBJ_GRAVITY: f32 = 700.0;
+pub const OBJ_BASE_SPEED: f32 = 50.0;
 pub const OBJ_SPEED_SCALE: f32 = 0.01;
-pub const OBJ_MAX_SPEED: f32 = 380.0;
+pub const OBJ_MAX_SPEED: f32 = 340.0;
 pub const OBJ_FRAME_COUNT: usize = 12;
 pub const OBJ_FRAME_COLS: i32 = 3;
 pub const OBJ_FRAME_ROWS: i32 = 4;
