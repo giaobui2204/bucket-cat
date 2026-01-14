@@ -15,6 +15,7 @@ impl Scoring {
             CatKind::Normal => NORMAL_CAT_SCORE,
             CatKind::Angel => ANGEL_CAT_SCORE,
             CatKind::Devil => DEVIL_CAT_SCORE,
+            CatKind::Explode => DEVIL_CAT_SCORE,
         };
         self.score += delta;
     }
@@ -23,4 +24,3 @@ impl Scoring {
         self.score
     }
 }
-
