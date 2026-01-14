@@ -14,7 +14,20 @@ pub fn run() {
 
     rl.set_target_fps(config::TARGET_FPS);
 
+    let bucket_texture = rl
+        .load_texture(&thread, "src/assets/cat/bucket.png")
+        .expect("load bucket texture");
+
     let mut world = World::new(config::SCREEN_W as f32, config::SCREEN_H as f32);
+    let bucket_frame_w =
+        bucket_texture.width as f32 / config::BUCKET_FRAME_COLS as f32 * config::BUCKET_DRAW_SCALE;
+    let bucket_frame_h = bucket_texture.height as f32 / config::BUCKET_FRAME_ROWS as f32
+        * config::BUCKET_DRAW_SCALE;
+    world.bucket.set_size(
+        Vector2::new(bucket_frame_w, bucket_frame_h),
+        config::SCREEN_W as f32,
+        config::SCREEN_H as f32,
+    );
 
     while !rl.window_should_close() {
         let dt = rl.get_frame_time();
@@ -26,6 +39,6 @@ pub fn run() {
 
         let mut d = rl.begin_drawing(&thread);
         d.clear_background(Color::BLACK);
-        render::draw_world(&mut d, &world);
+        render::draw_world(&mut d, &world, &bucket_texture);
     }
 }
