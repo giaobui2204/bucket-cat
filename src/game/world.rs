@@ -1,4 +1,5 @@
 use raylib::prelude::*;
+use crate::input::Input;
 
 use crate::game::bucket::Bucket;
 use crate::game::objects::FallingObject;
@@ -22,12 +23,12 @@ impl World {
     pub fn update(
         &mut self,
         rl: &RaylibHandle,
-        axis: f32,
+        input: Input,
         dt: f32,
         screen_w: f32,
         screen_h: f32,
     ) {
-        self.bucket.update(axis, dt, screen_w);
+        self.bucket.update(input.move_x, dt, screen_w);
 
         if let Some(obj) = self.spawner.update(rl, dt, screen_w) {
             self.objects.push(obj);

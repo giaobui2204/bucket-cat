@@ -17,3 +17,9 @@ pub const OBJ_FALL_SPEED: f32 = 160.0;
 
 // spawn
 pub const SPAWN_INTERVAL: f32 = 0.8;
+
+// input tuning
+pub const GAMEPAD_DEADZONE: f32 = 0.2;
+pub const KEYBOARD_AXIS: f32 = 1.0;
+pub const MOVE_AXIS_MIN: f32 = -1.0;
+pub const MOVE_AXIS_MAX: f32 = 1.0;
