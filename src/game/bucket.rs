@@ -33,17 +33,16 @@ impl Bucket {
         }
     }
 
-    pub fn update(&mut self, axis: f32, dt: f32, screen_w: f32) {
-        self.vel.x += axis * config::BUCKET_ACCEL * dt;
+    pub fn update(&mut self, axis: f32, dt: f32, screen_w: f32, difficulty: f32) {
+        let accel = config::BUCKET_ACCEL * difficulty;
+        let max_speed = config::BUCKET_MAX_SPEED * difficulty;
+        self.vel.x += axis * accel * dt;
 
         if axis == 0.0 {
             self.vel.x *= 1.0 / (1.0 + config::BUCKET_FRICTION * dt);
         }
 
-        self.vel.x = self
-            .vel
-            .x
-            .clamp(-config::BUCKET_MAX_SPEED, config::BUCKET_MAX_SPEED);
+        self.vel.x = self.vel.x.clamp(-max_speed, max_speed);
 
         self.pos.x += self.vel.x * dt;
 
