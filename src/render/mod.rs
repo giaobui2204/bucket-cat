@@ -64,4 +64,8 @@ pub fn draw_world(
             Color::WHITE,
         );
     }
+
+    // Placeholder score text (UI polish in another task)
+    let score_text = format!("{}: {}", config::GAME_SCORE_LABEL, world.score());
+    d.draw_text(&score_text, 12, 12, 22, Color::WHITE);
 }

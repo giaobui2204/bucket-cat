@@ -2,13 +2,16 @@ use raylib::prelude::*;
 use crate::input::Input;
 
 use crate::game::bucket::Bucket;
+use crate::game::collision;
 use crate::game::objects::FallingObject;
+use crate::game::scoring::Scoring;
 use crate::game::spawn::Spawner;
 
 pub struct World {
     pub bucket: Bucket,
     pub objects: Vec<FallingObject>,
     spawner: Spawner,
+    scoring: Scoring,
 }
 
 impl World {
@@ -17,6 +20,7 @@ impl World {
             bucket: Bucket::new(screen_w, screen_h),
             objects: Vec::new(),
             spawner: Spawner::new(),
+            scoring: Scoring::new(),
         }
     }
 
@@ -38,6 +42,16 @@ impl World {
             obj.update(dt);
         }
 
-        self.objects.retain(|o| !o.offscreen(screen_h));
+        self.objects.retain(|o| {
+            if collision::check_collision(o.pos, o.radius, self.bucket.rect()) {
+                self.scoring.register_catch(o.kind());
+                return false;
+            }
+            !o.offscreen(screen_h)
+        });
+    }
+
+    pub fn score(&self) -> i32 {
+        self.scoring.score()
     }
 }

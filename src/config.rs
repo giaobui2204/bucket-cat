@@ -3,6 +3,12 @@ pub const SCREEN_W: i32 = 640;
 pub const SCREEN_H: i32 = 480;
 pub const TARGET_FPS: u32 = 120;
 
+// scoring
+pub const GAME_SCORE_LABEL: &str = "GAME_SCORE";
+pub const NORMAL_CAT_SCORE: i32 = 1;
+pub const ANGEL_CAT_SCORE: i32 = 3;
+pub const DEVIL_CAT_SCORE: i32 = -2;
+
 // bucket
 pub const BUCKET_W: f32 = 48.0;
 pub const BUCKET_H: f32 = 150.0;
