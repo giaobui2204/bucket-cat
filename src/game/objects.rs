@@ -6,6 +6,7 @@ pub enum CatKind {
     Normal,
     Angel,
     Devil,
+    Explode,
 }
 
 #[derive(Clone)]

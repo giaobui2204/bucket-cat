@@ -39,7 +39,7 @@ pub fn draw_world(
         let texture = match obj.kind() {
             CatKind::Normal => normal_texture,
             CatKind::Angel => angel_texture,
-            CatKind::Devil => devil_texture,
+            CatKind::Devil | CatKind::Explode => devil_texture,
         };
         let frame_w = texture.width as f32 / config::OBJ_FRAME_COLS as f32;
         let frame_h = texture.height as f32 / config::OBJ_FRAME_ROWS as f32;
