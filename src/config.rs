@@ -36,6 +36,15 @@ pub const OBJ_DRAW_SCALE: f32 = 1.2;
 
 // spawn
 pub const SPAWN_INTERVAL: f32 = 0.8;
+pub const DEVIL_RATE_EARLY: f32 = 0.12;
+pub const DEVIL_RATE_MID: f32 = 0.16;
+pub const DEVIL_RATE_LATE: f32 = 0.20;
+pub const DEVIL_RATE_EARLY_END: f32 = 30.0;
+pub const DEVIL_RATE_MID_END: f32 = 90.0;
+pub const ANGEL_RATE: f32 = 0.15;
+pub const EXPLODE_RATE_IN_DEVIL: f32 = 0.05;
+pub const DEVIL_COOLDOWN: f32 = 0.8;
+pub const EXPLODE_PROTECT_SPAWNS: i32 = 18;
 
 // input tuning
 pub const GAMEPAD_DEADZONE: f32 = 0.2;
