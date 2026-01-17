@@ -4,6 +4,12 @@ use crate::config;
 use crate::input::Input;
 use crate::game::world::World;
 use crate::render;
+use crate::state::menu::{MenuAction, MenuState};
+
+enum Screen {
+    Menu,
+    Playing,
+}
 
 pub fn run() {
     let (mut rl, thread) = raylib::init()
@@ -26,35 +32,70 @@ pub fn run() {
     let devil_texture = rl
         .load_texture(&thread, "src/assets/cat/devilneko.png")
         .expect("load devil neko texture");
+    let logo_texture = rl
+        .load_texture(&thread, "src/assets/UI/bucket-logo.png")
+        .expect("load logo texture");
 
-    let mut world = World::new(config::SCREEN_W as f32, config::SCREEN_H as f32);
-    let bucket_frame_w =
-        bucket_texture.width as f32 / config::BUCKET_FRAME_COLS as f32 * config::BUCKET_DRAW_SCALE;
-    let bucket_frame_h = bucket_texture.height as f32 / config::BUCKET_FRAME_ROWS as f32
-        * config::BUCKET_DRAW_SCALE;
-    world.bucket.set_size(
-        Vector2::new(bucket_frame_w, bucket_frame_h),
+    let mut screen = Screen::Menu;
+    let mut menu = MenuState::new();
+    let mut world = create_world(
         config::SCREEN_W as f32,
         config::SCREEN_H as f32,
+        &bucket_texture,
     );
 
     while !rl.window_should_close() {
         let dt = rl.get_frame_time();
         let screen_w = rl.get_screen_width() as f32;
         let screen_h = rl.get_screen_height() as f32;
+        let mouse = rl.get_mouse_position();
+        let clicked = rl.is_mouse_button_pressed(MouseButton::MOUSE_BUTTON_LEFT);
+        let font = rl.get_font_default();
 
-        let input = Input::gather(&rl);
-        world.update(&rl, input, dt, screen_w, screen_h);
+        if let Screen::Playing = screen {
+            let input = Input::gather(&rl);
+            world.update(&rl, input, dt, screen_w, screen_h);
+        }
 
         let mut d = rl.begin_drawing(&thread);
-        d.clear_background(Color::BLACK);
-        render::draw_world(
-            &mut d,
-            &world,
-            &bucket_texture,
-            &normal_texture,
-            &angel_texture,
-            &devil_texture,
-        );
+        match screen {
+            Screen::Menu => {
+                if let MenuAction::Start =
+                    menu.update_and_draw(
+                        &mut d,
+                        screen_w,
+                        screen_h,
+                        mouse,
+                        clicked,
+                        &font,
+                        &logo_texture,
+                    )
+                {
+                    world = create_world(screen_w, screen_h, &bucket_texture);
+                    screen = Screen::Playing;
+                }
+            }
+            Screen::Playing => {
+                d.clear_background(Color::BLACK);
+                render::draw_world(
+                    &mut d,
+                    &world,
+                    &bucket_texture,
+                    &normal_texture,
+                    &angel_texture,
+                    &devil_texture,
+                );
+            }
+        }
     }
+}
+
+fn create_world(screen_w: f32, screen_h: f32, bucket_texture: &Texture2D) -> World {
+    let mut world = World::new(screen_w, screen_h);
+    let bucket_frame_w =
+        bucket_texture.width as f32 / config::BUCKET_FRAME_COLS as f32 * config::BUCKET_DRAW_SCALE;
+    let bucket_frame_h = bucket_texture.height as f32 / config::BUCKET_FRAME_ROWS as f32
+        * config::BUCKET_DRAW_SCALE;
+    world.bucket.set_size(Vector2::new(bucket_frame_w, bucket_frame_h), screen_w, screen_h);
+    world
 }
