@@ -4,11 +4,14 @@ use crate::config;
 use crate::input::Input;
 use crate::game::world::World;
 use crate::render;
+use crate::ui;
 use crate::state::menu::{MenuAction, MenuState};
+use crate::state::pause::{PauseState, PauseAction};
 
 enum Screen {
     Menu,
     Playing,
+    Paused,
 }
 
 pub fn run() {
@@ -38,6 +41,7 @@ pub fn run() {
 
     let mut screen = Screen::Menu;
     let mut menu = MenuState::new();
+    let pause_menu = PauseState::new();
     let mut world = create_world(
         config::SCREEN_W as f32,
         config::SCREEN_H as f32,
@@ -53,8 +57,14 @@ pub fn run() {
         let font = rl.get_font_default();
 
         if let Screen::Playing = screen {
-            let input = Input::gather(&rl);
-            world.update(&rl, input, dt, screen_w, screen_h);
+            // Check for pause button click BEFORE update
+            let pause_btn_rect = Rectangle::new(screen_w - 50.0, 10.0, 40.0, 40.0);
+            if clicked && pause_btn_rect.check_collision_point_rec(mouse) {
+                screen = Screen::Paused;
+            } else {
+                let input = Input::gather(&rl);
+                world.update(&rl, input, dt, screen_w, screen_h);
+            }
         }
 
         let mut d = rl.begin_drawing(&thread);
@@ -85,6 +95,39 @@ pub fn run() {
                     &angel_texture,
                     &devil_texture,
                 );
+                
+                // Draw Pause Button
+                let pause_btn_rect = Rectangle::new(screen_w - 50.0, 10.0, 40.0, 40.0);
+                ui::draw_button(
+                    &mut d,
+                    pause_btn_rect,
+                    "||",
+                    mouse,
+                    false,
+                    &font,
+                    config::COLOR_LIGHT_BG,
+                    config::COLOR_LIGHT_HOVER,
+                    config::COLOR_ACCENT_TEXT,
+                    config::COLOR_ACCENT_BORDER,
+                );
+            }
+            Screen::Paused => {
+                // Draw world as background
+                d.clear_background(Color::BLACK);
+                render::draw_world(
+                    &mut d,
+                    &world,
+                    &bucket_texture,
+                    &normal_texture,
+                    &angel_texture,
+                    &devil_texture,
+                );
+
+                match pause_menu.update_and_draw(&mut d, world.score(), screen_w, screen_h, mouse, clicked) {
+                    PauseAction::Resume => screen = Screen::Playing,
+                    PauseAction::Exit => screen = Screen::Menu,
+                    PauseAction::None => {},
+                }
             }
         }
     }

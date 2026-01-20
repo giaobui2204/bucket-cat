@@ -1,4 +1,6 @@
 use raylib::prelude::*;
+use crate::config;
+use crate::ui;
 
 pub enum MenuAction {
     None,
@@ -71,37 +73,32 @@ impl MenuState {
                     height: button_h,
                 };
 
-                let accent = Color::new(255, 179, 217, 255);
-                let accent_hover = Color::new(255, 199, 230, 255);
-                let accent_text = Color::new(109, 43, 80, 255);
-                let accent_border = Color::new(233, 130, 180, 255);
-
-                if draw_button(
+                if ui::draw_button(
                     d,
                     start_rect,
                     "Start",
                     mouse,
                     clicked,
                     font,
-                    accent,
-                    accent_hover,
-                    accent_text,
-                    accent_border,
+                    config::COLOR_ACCENT,
+                    config::COLOR_ACCENT_HOVER,
+                    config::COLOR_ACCENT_TEXT,
+                    config::COLOR_ACCENT_BORDER,
                 ) {
                     return MenuAction::Start;
                 }
 
-                if draw_button(
+                if ui::draw_button(
                     d,
                     leaderboard_rect,
                     "Leaderboard",
                     mouse,
                     clicked,
                     font,
-                    Color::new(255, 224, 240, 255),
-                    Color::new(255, 233, 245, 255),
-                    accent_text,
-                    accent_border,
+                    config::COLOR_LIGHT_BG,
+                    config::COLOR_LIGHT_HOVER,
+                    config::COLOR_ACCENT_TEXT,
+                    config::COLOR_ACCENT_BORDER,
                 ) {
                     self.view = MenuView::Leaderboard;
                 }
@@ -115,7 +112,7 @@ impl MenuState {
                     ((screen_w - title_w) / 2.0) as i32,
                     60,
                     title_size,
-                    Color::new(109, 43, 80, 255),
+                    config::COLOR_ACCENT_TEXT,
                 );
                 let subtitle = "Coming soon";
                 let subtitle_size = 18;
@@ -125,7 +122,7 @@ impl MenuState {
                     ((screen_w - subtitle_w) / 2.0) as i32,
                     110,
                     subtitle_size,
-                    Color::new(139, 79, 110, 255),
+                    config::COLOR_LIGHT_TEXT_SUB,
                 );
 
                 let back_rect = Rectangle {
@@ -134,17 +131,17 @@ impl MenuState {
                     width: 180.0,
                     height: 48.0,
                 };
-                if draw_button(
+                if ui::draw_button(
                     d,
                     back_rect,
                     "Back",
                     mouse,
                     clicked,
                     font,
-                    Color::new(255, 224, 240, 255),
-                    Color::new(255, 233, 245, 255),
-                    Color::new(109, 43, 80, 255),
-                    Color::new(233, 130, 180, 255),
+                    config::COLOR_LIGHT_BG,
+                    config::COLOR_LIGHT_HOVER,
+                    config::COLOR_ACCENT_TEXT,
+                    config::COLOR_ACCENT_BORDER,
                 ) {
                     self.view = MenuView::Main;
                 }
@@ -161,59 +158,25 @@ fn draw_menu_background(d: &mut RaylibDrawHandle, screen_w: f32, screen_h: f32) 
         0,
         screen_w as i32,
         screen_h as i32,
-        Color::new(255, 240, 246, 255),
-        Color::new(255, 214, 232, 255),
+        config::COLOR_MENU_BG_START,
+        config::COLOR_MENU_BG_END,
     );
     d.draw_circle(
         (screen_w * 0.2) as i32,
         (screen_h * 0.28) as i32,
         60.0,
-        Color::new(255, 228, 241, 120),
+        config::COLOR_MENU_CIRCLE,
     );
     d.draw_circle(
         (screen_w * 0.82) as i32,
         (screen_h * 0.18) as i32,
         46.0,
-        Color::new(255, 228, 241, 120),
+        config::COLOR_MENU_CIRCLE,
     );
     d.draw_circle(
         (screen_w * 0.78) as i32,
         (screen_h * 0.72) as i32,
         70.0,
-        Color::new(255, 228, 241, 120),
+        config::COLOR_MENU_CIRCLE,
     );
-}
-
-fn draw_button(
-    d: &mut RaylibDrawHandle,
-    rect: Rectangle,
-    label: &str,
-    mouse: Vector2,
-    clicked: bool,
-    font: &WeakFont,
-    base: Color,
-    hover: Color,
-    text: Color,
-    border: Color,
-) -> bool {
-    let hovered = rect.check_collision_point_rec(mouse);
-    let fill = if hovered { hover } else { base };
-    let shadow = Color::new(162, 74, 120, 60);
-    d.draw_rectangle_rounded(
-        Rectangle {
-            y: rect.y + 4.0,
-            ..rect
-        },
-        0.35,
-        8,
-        shadow,
-    );
-    d.draw_rectangle_rounded(rect, 0.35, 8, fill);
-    d.draw_rectangle_rounded_lines_ex(rect, 0.35, 8, 2.0, border);
-    let font_size = 22;
-    let text_w = font.measure_text(label, font_size as f32, 1.0).x;
-    let text_x = rect.x + (rect.width - text_w) / 2.0;
-    let text_y = rect.y + (rect.height - font_size as f32) / 2.0 - 2.0;
-    d.draw_text(label, text_x as i32, text_y as i32, font_size, text);
-    hovered && clicked
 }

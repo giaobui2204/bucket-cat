@@ -1,7 +1,23 @@
+use raylib::prelude::Color;
+
 // window
 pub const SCREEN_W: i32 = 640;
 pub const SCREEN_H: i32 = 480;
 pub const TARGET_FPS: u32 = 120;
+
+// colors
+pub const COLOR_ACCENT: Color = Color::new(255, 179, 217, 255);
+pub const COLOR_ACCENT_HOVER: Color = Color::new(255, 199, 230, 255);
+pub const COLOR_ACCENT_TEXT: Color = Color::new(109, 43, 80, 255);
+pub const COLOR_ACCENT_BORDER: Color = Color::new(233, 130, 180, 255);
+
+pub const COLOR_LIGHT_BG: Color = Color::new(255, 224, 240, 255);
+pub const COLOR_LIGHT_HOVER: Color = Color::new(255, 233, 245, 255);
+pub const COLOR_LIGHT_TEXT_SUB: Color = Color::new(139, 79, 110, 255);
+
+pub const COLOR_MENU_BG_START: Color = Color::new(255, 240, 246, 255);
+pub const COLOR_MENU_BG_END: Color = Color::new(255, 214, 232, 255);
+pub const COLOR_MENU_CIRCLE: Color = Color::new(255, 228, 241, 120);
 
 // scoring
 pub const GAME_SCORE_LABEL: &str = "GAME_SCORE";
