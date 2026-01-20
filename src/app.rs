@@ -7,11 +7,15 @@ use crate::render;
 use crate::ui;
 use crate::state::menu::{MenuAction, MenuState};
 use crate::state::pause::{PauseState, PauseAction};
+use crate::state::leaderboard::{LeaderboardState, LeaderboardAction};
+use crate::state::game_over::{GameOverState, GameOverAction};
 
 enum Screen {
     Menu,
     Playing,
     Paused,
+    Leaderboard,
+    GameOver,
 }
 
 pub fn run() {
@@ -42,6 +46,8 @@ pub fn run() {
     let mut screen = Screen::Menu;
     let mut menu = MenuState::new();
     let pause_menu = PauseState::new();
+    let mut leaderboard = LeaderboardState::new();
+    let mut game_over = GameOverState::new();
     let mut world = create_world(
         config::SCREEN_W as f32,
         config::SCREEN_H as f32,
@@ -66,24 +72,41 @@ pub fn run() {
                 world.update(&rl, input, dt, screen_w, screen_h);
             }
         }
+        
+        if let Screen::GameOver = screen {
+             game_over.update_input(&mut rl);
+        }
 
         let mut d = rl.begin_drawing(&thread);
         match screen {
             Screen::Menu => {
-                if let MenuAction::Start =
-                    menu.update_and_draw(
-                        &mut d,
-                        screen_w,
-                        screen_h,
-                        mouse,
-                        clicked,
-                        &font,
-                        &logo_texture,
-                    )
-                {
-                    world = create_world(screen_w, screen_h, &bucket_texture);
-                    screen = Screen::Playing;
+                let action = menu.update_and_draw(
+                    &mut d,
+                    screen_w,
+                    screen_h,
+                    mouse,
+                    clicked,
+                    &font,
+                    &logo_texture,
+                );
+
+                match action {
+                    MenuAction::Start => {
+                        world = create_world(screen_w, screen_h, &bucket_texture);
+                        screen = Screen::Playing;
+                    }
+                    MenuAction::Leaderboard => {
+                        leaderboard.reload();
+                        screen = Screen::Leaderboard;
+                    }
+                    MenuAction::None => {}
                 }
+            }
+            Screen::Leaderboard => {
+                 match leaderboard.update_and_draw(&mut d, screen_w, screen_h, mouse, clicked, &font) {
+                    LeaderboardAction::Back => screen = Screen::Menu,
+                    LeaderboardAction::None => {},
+                 }
             }
             Screen::Playing => {
                 d.clear_background(Color::BLACK);
@@ -125,9 +148,21 @@ pub fn run() {
 
                 match pause_menu.update_and_draw(&mut d, world.score(), screen_w, screen_h, mouse, clicked) {
                     PauseAction::Resume => screen = Screen::Playing,
-                    PauseAction::Exit => screen = Screen::Menu,
+                    PauseAction::Exit => {
+                        game_over.set_score(world.score());
+                        screen = Screen::GameOver;
+                    }
                     PauseAction::None => {},
                 }
+            }
+            Screen::GameOver => {
+                 match game_over.draw(&mut d, screen_w, screen_h, mouse, clicked, &font) {
+                    GameOverAction::Submit => {
+                        leaderboard.reload();
+                        screen = Screen::Leaderboard;
+                    },
+                    GameOverAction::None => {},
+                 }
             }
         }
     }
