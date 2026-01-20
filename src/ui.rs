@@ -1,5 +1,36 @@
 use raylib::prelude::*;
 
+use crate::config;
+
+pub fn draw_menu_background(d: &mut RaylibDrawHandle, screen_w: f32, screen_h: f32) {
+    d.draw_rectangle_gradient_v(
+        0,
+        0,
+        screen_w as i32,
+        screen_h as i32,
+        config::COLOR_MENU_BG_START,
+        config::COLOR_MENU_BG_END,
+    );
+    d.draw_circle(
+        (screen_w * 0.2) as i32,
+        (screen_h * 0.28) as i32,
+        60.0,
+        config::COLOR_MENU_CIRCLE,
+    );
+    d.draw_circle(
+        (screen_w * 0.82) as i32,
+        (screen_h * 0.18) as i32,
+        46.0,
+        config::COLOR_MENU_CIRCLE,
+    );
+    d.draw_circle(
+        (screen_w * 0.78) as i32,
+        (screen_h * 0.72) as i32,
+        70.0,
+        config::COLOR_MENU_CIRCLE,
+    );
+}
+
 pub fn draw_button(
     d: &mut RaylibDrawHandle,
     rect: Rectangle,
