@@ -49,7 +49,7 @@ impl World {
 
         self.objects.retain(|o| {
             if collision::check_collision(o.pos, o.radius, self.bucket.rect()) {
-                self.scoring.register_catch(o.kind());
+                self.scoring.register_catch(o.kind(), rl);
                 return false;
             }
             !o.offscreen(screen_h)
