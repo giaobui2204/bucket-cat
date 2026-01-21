@@ -23,6 +23,11 @@ impl Scoring {
         total
     }
 
+    pub fn apply_multiplier(&mut self, multiplier: i32) {
+        let mult = multiplier.max(1);
+        self.score = (self.score * mult).max(0);
+    }
+
     pub fn score(&self) -> i32 {
         self.score
     }

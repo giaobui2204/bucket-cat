@@ -192,11 +192,11 @@ impl World {
                 self.effects.set_message("Bucket exploded! Score reset!");
             }
             DevilEffect::ScoreDouble => {
-                self.effects.apply_score_multiplier(2);
+                self.scoring.apply_multiplier(2);
                 self.effects.set_message("Score x2!");
             }
             DevilEffect::ScoreTriple => {
-                self.effects.apply_score_multiplier(3);
+                self.scoring.apply_multiplier(3);
                 self.effects.set_message("Score x3!");
             }
         }
