@@ -75,4 +75,12 @@ impl Bucket {
         self.pos.x = (screen_w - self.size.x) / 2.0;
         self.pos.y = screen_h - config::BUCKET_Y_OFFSET;
     }
+
+    pub fn apply_size(&mut self, size: Vector2, screen_w: f32, screen_h: f32) {
+        let center_x = self.pos.x + self.size.x / 2.0;
+        self.size = size;
+        self.pos.x = (center_x - self.size.x / 2.0)
+            .clamp(0.0, (screen_w - self.size.x).max(0.0));
+        self.pos.y = screen_h - config::BUCKET_Y_OFFSET;
+    }
 }

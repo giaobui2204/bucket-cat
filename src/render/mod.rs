@@ -65,7 +65,53 @@ pub fn draw_world(
         );
     }
 
-    // Placeholder score text (UI polish in another task)
+    // Placeholder score text
     let score_text = format!("{}: {}", config::GAME_SCORE_LABEL, world.score());
     d.draw_text(&score_text, 12, 12, 22, Color::WHITE);
+
+    if let Some((pos, t)) = world.explosion_effect() {
+        let radius = 18.0 + t * 90.0;
+        let alpha = ((1.0 - t) * 200.0).clamp(0.0, 200.0) as u8;
+        let color = Color::new(255, 150, 210, alpha);
+        d.draw_circle_lines(pos.x as i32, pos.y as i32, radius, color);
+        d.draw_circle_lines(
+            pos.x as i32,
+            pos.y as i32,
+            radius * 0.6,
+            Color::new(255, 210, 235, alpha),
+        );
+    }
+
+    if let Some(message) = world.effect_message() {
+        let font_size = 22;
+        let text_w = d.measure_text(message, font_size);
+        let pad_x = 18;
+        let pad_y = 8;
+        let box_w = text_w + pad_x * 2;
+        let box_h = font_size + pad_y * 2;
+        let box_x = ((config::SCREEN_W - box_w) / 2).max(0);
+        let box_y = 50;
+        let alpha = (world.effect_message_alpha() * 220.0).clamp(0.0, 220.0) as u8;
+        d.draw_rectangle(
+            box_x,
+            box_y,
+            box_w,
+            box_h,
+            Color::new(255, 230, 245, alpha),
+        );
+        d.draw_rectangle_lines(
+            box_x,
+            box_y,
+            box_w,
+            box_h,
+            Color::new(233, 130, 180, alpha),
+        );
+        d.draw_text(
+            message,
+            box_x + pad_x,
+            box_y + pad_y,
+            font_size,
+            Color::new(109, 43, 80, alpha),
+        );
+    }
 }
