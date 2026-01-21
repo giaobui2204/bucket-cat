@@ -1,8 +1,10 @@
 use raylib::prelude::*;
+use raylib::audio::RaylibAudio;
 
 use crate::config;
 use crate::input::Input;
 use crate::game::world::World;
+use crate::game::effects::MusicMode;
 use crate::render;
 use crate::ui;
 use crate::state::menu::{MenuAction, MenuState};
@@ -25,6 +27,7 @@ pub fn run() {
         .build();
 
     rl.set_target_fps(config::TARGET_FPS);
+    let audio = RaylibAudio::init_audio_device().expect("init audio device");
 
     //access to the assets texture
     let bucket_texture = rl
@@ -42,6 +45,12 @@ pub fn run() {
     let logo_texture = rl
         .load_texture(&thread, "src/assets/UI/bucket-logo.png")
         .expect("load logo texture");
+    let music_default = audio
+        .new_music("src/assets/sound_effects/sakura-default-music.mp3")
+        .expect("load default music");
+    let music_alt = audio
+        .new_music("src/assets/sound_effects/coffee-time-bgm.mp3")
+        .expect("load alternate music");
 
     let mut screen = Screen::Menu;
     let mut menu = MenuState::new();
@@ -53,6 +62,8 @@ pub fn run() {
         config::SCREEN_H as f32,
         &bucket_texture,
     );
+    let mut current_music = MusicMode::Default;
+    let mut music_playing = false;
 
     while !rl.window_should_close() {
         let dt = rl.get_frame_time();
@@ -75,6 +86,39 @@ pub fn run() {
         
         if let Screen::GameOver = screen {
              game_over.update_input(&mut rl);
+        }
+
+        let should_play_music = matches!(screen, Screen::Playing | Screen::Paused);
+        if should_play_music {
+            let desired = world.music_mode();
+            if !music_playing {
+                match desired {
+                    MusicMode::Default => music_default.play_stream(),
+                    MusicMode::Alternate => music_alt.play_stream(),
+                }
+                current_music = desired;
+                music_playing = true;
+            } else if desired != current_music {
+                match current_music {
+                    MusicMode::Default => music_default.stop_stream(),
+                    MusicMode::Alternate => music_alt.stop_stream(),
+                }
+                match desired {
+                    MusicMode::Default => music_default.play_stream(),
+                    MusicMode::Alternate => music_alt.play_stream(),
+                }
+                current_music = desired;
+            }
+
+            match current_music {
+                MusicMode::Default => music_default.update_stream(),
+                MusicMode::Alternate => music_alt.update_stream(),
+            }
+        } else if music_playing {
+            music_default.stop_stream();
+            music_alt.stop_stream();
+            music_playing = false;
+            current_music = MusicMode::Default;
         }
 
         let mut d = rl.begin_drawing(&thread);
@@ -175,5 +219,6 @@ fn create_world(screen_w: f32, screen_h: f32, bucket_texture: &Texture2D) -> Wor
     let bucket_frame_h = bucket_texture.height as f32 / config::BUCKET_FRAME_ROWS as f32
         * config::BUCKET_DRAW_SCALE;
     world.bucket.set_size(Vector2::new(bucket_frame_w, bucket_frame_h), screen_w, screen_h);
+    world.set_base_bucket_size(Vector2::new(bucket_frame_w, bucket_frame_h));
     world
 }

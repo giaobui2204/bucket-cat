@@ -62,6 +62,16 @@ pub const EXPLODE_RATE_IN_DEVIL: f32 = 0.05;
 pub const DEVIL_COOLDOWN: f32 = 0.8;
 pub const EXPLODE_PROTECT_SPAWNS: i32 = 18;
 
+// devil cat effects
+pub const DEVIL_INVERT_DURATION: f32 = 4.0;
+pub const DEVIL_SIZE_EFFECT_DURATION: f32 = 6.0;
+pub const DEVIL_SIZE_SMALL_SCALE: f32 = 0.7;
+pub const DEVIL_SIZE_LARGE_SCALE: f32 = 1.3;
+pub const DEVIL_SCORE_MULTIPLIER_DURATION: f32 = 8.0;
+pub const DEVIL_MUSIC_SWAP_DURATION: f32 = 10.0;
+pub const DEVIL_EXPLODE_ANIM_DURATION: f32 = 0.9;
+pub const DEVIL_EFFECT_MESSAGE_DURATION: f32 = 2.4;
+
 // input tuning
 pub const GAMEPAD_DEADZONE: f32 = 0.2;
 pub const KEYBOARD_AXIS: f32 = 1.0;
