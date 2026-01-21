@@ -19,7 +19,7 @@ impl Scoring {
             CatKind::Explode => DEVIL_CAT_SCORE,
         };
         let total = delta * multiplier.max(1);
-        self.score += total;
+        self.score = (self.score + total).max(0);
         total
     }
 
