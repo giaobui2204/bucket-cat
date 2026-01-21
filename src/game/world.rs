@@ -119,10 +119,10 @@ impl World {
         match kind {
             CatKind::Devil => {
                 let effect = self.random_devil_effect(rl);
-                self.apply_devil_effect(effect);
+                self.apply_devil_effect(effect, rl);
             }
             CatKind::Explode => {
-                self.apply_devil_effect(DevilEffect::BucketExplode);
+                self.apply_devil_effect(DevilEffect::BucketExplode, rl);
             }
             _ => {}
         }
@@ -138,12 +138,14 @@ impl World {
             DevilEffect::ScoreDouble,
             DevilEffect::ScoreTriple,
         ];
-        let max_index = (effects.len() as i32 - 1).max(0);
+        // Fix: get_random_value uses GetRandomValue(min, max) which is INCLUSIVE.
+        // So for an array of size 7 (indices 0..6), we must pass max=6.
+        let max_index = effects.len() as i32 - 1;
         let index = rl.get_random_value::<i32>(0..max_index) as usize;
         effects[index]
     }
 
-    fn apply_devil_effect(&mut self, effect: DevilEffect) {
+    fn apply_devil_effect(&mut self, effect: DevilEffect, rl: &RaylibHandle) {
         match effect {
             DevilEffect::InvertControls => {
                 self.effects.apply_invert();
@@ -158,8 +160,29 @@ impl World {
                 self.effects.set_message("Bucket enlarged!");
             }
             DevilEffect::MusicSwap => {
-                self.effects.apply_music_swap();
-                self.effects.set_message("Music changed!");
+                // 0..5: Alternate tracks (6 tracks total index 0-5)
+                // 6: Default track
+                // GetRandomValue(0, 6) returns 0..6 inclusive
+                let mut pick = rl.get_random_value::<i32>(0..6);
+                let current_mode = self.effects.music_mode();
+
+                loop {
+                    let is_same = match current_mode {
+                        MusicMode::Default => pick == 6,
+                        MusicMode::Alternate(idx) => pick == idx as i32,
+                    };
+
+                    if !is_same { break; }
+                    pick = rl.get_random_value::<i32>(0..6);
+                }
+
+                if pick == 6 {
+                    self.effects.set_music_default();
+                    self.effects.set_message("Music Reset!");
+                } else {
+                    self.effects.apply_music_swap(pick as usize);
+                    self.effects.set_message("Music changed!");
+                }
             }
             DevilEffect::BucketExplode => {
                 let rect = self.bucket.rect();

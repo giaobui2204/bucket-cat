@@ -15,7 +15,7 @@ pub enum DevilEffect {
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum MusicMode {
     Default,
-    Alternate,
+    Alternate(usize),
 }
 
 pub struct EffectsState {
@@ -24,7 +24,7 @@ pub struct EffectsState {
     size_scale: f32,
     multiplier_timer: f32,
     score_multiplier: i32,
-    music_timer: f32,
+    music_timer: f32, // Kept for struct layout, but logic will be removed
     music_mode: MusicMode,
     message: String,
     message_timer: f32,
@@ -59,10 +59,11 @@ impl EffectsState {
         if self.multiplier_timer <= 0.0 {
             self.score_multiplier = 1;
         }
-        self.music_timer = (self.music_timer - dt).max(0.0);
-        if self.music_timer <= 0.0 {
-            self.music_mode = MusicMode::Default;
-        }
+        // Music timer logic removed to prevent auto-reset
+        // self.music_timer = (self.music_timer - dt).max(0.0);
+        // if self.music_timer <= 0.0 {
+        //    self.music_mode = MusicMode::Default;
+        // }
         self.message_timer = (self.message_timer - dt).max(0.0);
         if self.message_timer <= 0.0 {
             self.message.clear();
@@ -133,10 +134,13 @@ impl EffectsState {
         self.score_multiplier = multiplier.max(1);
         self.multiplier_timer = config::DEVIL_SCORE_MULTIPLIER_DURATION;
     }
+    pub fn apply_music_swap(&mut self, track_idx: usize) {
+        self.music_mode = MusicMode::Alternate(track_idx);
+        // self.music_timer = config::DEVIL_MUSIC_SWAP_DURATION; // Timer no longer used
+    }
 
-    pub fn apply_music_swap(&mut self) {
-        self.music_mode = MusicMode::Alternate;
-        self.music_timer = config::DEVIL_MUSIC_SWAP_DURATION;
+    pub fn set_music_default(&mut self) {
+        self.music_mode = MusicMode::Default;
     }
 
     pub fn trigger_explosion(&mut self, pos: Vector2) {
