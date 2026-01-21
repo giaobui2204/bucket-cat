@@ -46,6 +46,9 @@ pub fn run() {
     let logo_texture = rl
         .load_texture(&thread, "src/assets/UI/bucket-logo.png")
         .expect("load logo texture");
+    let bg_texture = rl
+        .load_texture(&thread, "src/assets/UI/play_background.png")
+        .expect("load background texture");
     let crying_cat_texture = rl
         .load_texture(&thread, "src/assets/cat/crying_cat.png")
         .expect("load crying cat texture");
@@ -197,7 +200,21 @@ pub fn run() {
                  }
             }
             Screen::Playing => {
-                d.clear_background(Color::BLACK);
+                // d.clear_background(Color::BLACK);
+                let bg_scale = (screen_w / bg_texture.width as f32).max(screen_h / bg_texture.height as f32);
+                let bg_dest_w = bg_texture.width as f32 * bg_scale;
+                let bg_dest_h = bg_texture.height as f32 * bg_scale;
+                let bg_dest_x = (screen_w - bg_dest_w) / 2.0;
+                let bg_dest_y = (screen_h - bg_dest_h) / 2.0;
+                d.draw_texture_pro(
+                    &bg_texture,
+                    Rectangle::new(0.0, 0.0, bg_texture.width as f32, bg_texture.height as f32),
+                    Rectangle::new(bg_dest_x, bg_dest_y, bg_dest_w, bg_dest_h),
+                    Vector2::new(0.0, 0.0),
+                    0.0,
+                    Color::WHITE,
+                );
+
                 render::draw_world(
                     &mut d,
                     &world,
@@ -225,15 +242,28 @@ pub fn run() {
             }
             Screen::Paused => {
                 // Draw world as background
-                d.clear_background(Color::BLACK);
+                let bg_scale = (screen_w / bg_texture.width as f32).max(screen_h / bg_texture.height as f32);
+                let bg_dest_w = bg_texture.width as f32 * bg_scale;
+                let bg_dest_h = bg_texture.height as f32 * bg_scale;
+                let bg_dest_x = (screen_w - bg_dest_w) / 2.0;
+                let bg_dest_y = (screen_h - bg_dest_h) / 2.0;
+                d.draw_texture_pro(
+                    &bg_texture,
+                    Rectangle::new(0.0, 0.0, bg_texture.width as f32, bg_texture.height as f32),
+                    Rectangle::new(bg_dest_x, bg_dest_y, bg_dest_w, bg_dest_h),
+                    Vector2::new(0.0, 0.0),
+                    0.0,
+                    Color::WHITE,
+                );
+
                 render::draw_world(
                     &mut d,
                     &world,
-                    &crying_cat_texture,
                     &bucket_texture,
                     &normal_texture,
                     &angel_texture,
                     &devil_texture,
+                    &crying_cat_texture,
                 );
 
                 match pause_menu.update_and_draw(&mut d, world.score(), screen_w, screen_h, mouse, clicked) {
