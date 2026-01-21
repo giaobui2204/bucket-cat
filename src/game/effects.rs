@@ -59,11 +59,6 @@ impl EffectsState {
         if self.multiplier_timer <= 0.0 {
             self.score_multiplier = 1;
         }
-        // Music timer logic removed to prevent auto-reset
-        // self.music_timer = (self.music_timer - dt).max(0.0);
-        // if self.music_timer <= 0.0 {
-        //    self.music_mode = MusicMode::Default;
-        // }
         self.message_timer = (self.message_timer - dt).max(0.0);
         if self.message_timer <= 0.0 {
             self.message.clear();

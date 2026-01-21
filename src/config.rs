@@ -23,7 +23,7 @@ pub const COLOR_MENU_CIRCLE: Color = Color::new(255, 228, 241, 120);
 pub const GAME_SCORE_LABEL: &str = "GAME_SCORE";
 pub const SCORES_FILE: &str = "scores.txt";
 pub const NORMAL_CAT_SCORE: i32 = 1;
-pub const DEVIL_CAT_SCORE: i32 = -2;
+pub const DEVIL_CAT_SCORE: i32 = 0;
 
 // bucket
 pub const BUCKET_W: f32 = 48.0;

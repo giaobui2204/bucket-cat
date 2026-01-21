@@ -19,8 +19,13 @@ impl Scoring {
             CatKind::Explode => DEVIL_CAT_SCORE,
         };
         let total = delta * multiplier.max(1);
-        self.score += total;
+        self.score = (self.score + total).max(0);
         total
+    }
+
+    pub fn apply_multiplier(&mut self, multiplier: i32) {
+        let mult = multiplier.max(1);
+        self.score = (self.score * mult).max(0);
     }
 
     pub fn score(&self) -> i32 {
