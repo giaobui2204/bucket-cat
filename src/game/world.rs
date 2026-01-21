@@ -19,10 +19,19 @@ pub struct World {
     elapsed_time: f32,
     base_bucket_size: Vector2,
     bucket_scale: f32,
+    
+    // Angry Cat Mechanism
+    pub angry_points: i32,
+    pub max_angry_points: i32,
+    pub giant_cat_y: Option<f32>,
+    pub giant_cat_frame: usize,
+    giant_cat_anim_timer: f32,
+    giant_cat_landed_timer: f32,
+    pub game_over_trigger: bool,
 }
 
 impl World {
-    pub fn new(screen_w: f32, screen_h: f32) -> Self {
+    pub fn new(screen_w: f32, screen_h: f32, initial_max_angry: i32) -> Self {
         let bucket = Bucket::new(screen_w, screen_h);
         let base_bucket_size = bucket.size;
         Self {
@@ -34,6 +43,14 @@ impl World {
             elapsed_time: 0.0,
             base_bucket_size,
             bucket_scale: 1.0,
+
+            angry_points: 0,
+            max_angry_points: initial_max_angry,
+            giant_cat_y: None,
+            giant_cat_frame: 0,
+            giant_cat_landed_timer: 0.0,
+            giant_cat_anim_timer: 0.0,
+            game_over_trigger: false,
         }
     }
 
@@ -45,6 +62,43 @@ impl World {
         screen_w: f32,
         screen_h: f32,
     ) {
+        if let Some(y) = self.giant_cat_y {
+            let speed = config::GIANT_CAT_SPEED;
+            let target_y = screen_h - (config::CRYING_CAT_FRAME_H * config::CRYING_CAT_SCALE);
+            
+            // Move if we haven't reached the target
+            if y < target_y {
+                let new_y = y + speed * dt;
+                // clamp
+                let final_y = if new_y > target_y { target_y } else { new_y };
+                self.giant_cat_y = Some(final_y);
+                
+                // Animate Giant Cat while moving
+                self.giant_cat_anim_timer += dt;
+                if self.giant_cat_anim_timer >= 1.0 / config::CRYING_CAT_FPS {
+                    self.giant_cat_anim_timer = 0.0;
+                    self.giant_cat_frame = (self.giant_cat_frame + 1) % config::CRYING_CAT_FRAMES;
+                }
+                
+                if final_y >= target_y {
+                    // self.game_over_trigger = true;
+                    // Start timer
+                    self.giant_cat_landed_timer += dt;
+                    if self.giant_cat_landed_timer >= config::GIANT_CAT_LANDED_DELAY {
+                        self.game_over_trigger = true;
+                    }
+                }
+            } else {
+                // Ensure we stay at target
+                self.giant_cat_y = Some(target_y);
+                self.giant_cat_landed_timer += dt;
+                if self.giant_cat_landed_timer >= config::GIANT_CAT_LANDED_DELAY {
+                    self.game_over_trigger = true;
+                }
+            }
+            return;
+        }
+
         self.elapsed_time += dt;
         self.effects.update(dt);
         let move_x = self.effects.apply_input(input.move_x);
@@ -79,11 +133,21 @@ impl World {
             }
             if !obj.offscreen(screen_h) {
                 remaining.push(obj);
+            } else {
+                 match obj.kind() {
+                     CatKind::Normal => self.angry_points += config::ANGRY_PENALTY_NORMAL,
+                     CatKind::Angel => self.angry_points += config::ANGRY_PENALTY_ANGEL,
+                     _ => {}
+                 }
             }
         }
         self.objects = remaining;
         for kind in caught {
             self.handle_catch(kind, rl);
+        }
+
+        if self.angry_points >= self.max_angry_points && self.giant_cat_y.is_none() {
+             self.giant_cat_y = Some(-800.0); // Start way above
         }
     }
 

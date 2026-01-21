@@ -1,5 +1,9 @@
 use raylib::prelude::*;
 
+pub fn get_random_value(min: i32, max: i32) -> i32 {
+    unsafe { raylib::ffi::GetRandomValue(min, max) }
+}
+
 pub struct Rng {
     // placeholder for seeded RNG later
 }

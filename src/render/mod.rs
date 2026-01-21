@@ -10,6 +10,7 @@ pub fn draw_world(
     normal_texture: &Texture2D,
     angel_texture: &Texture2D,
     devil_texture: &Texture2D,
+    crying_cat_texture: &Texture2D,
 ) {
     let r = world.bucket.rect();
     let source = Rectangle {
@@ -113,5 +114,50 @@ pub fn draw_world(
             font_size,
             Color::new(109, 43, 80, alpha),
         );
+    }
+
+    // Angry Bar
+    let bar_w = config::ANGRY_BAR_MAX_WIDTH;
+    let bar_h = config::ANGRY_BAR_HEIGHT;
+    let bar_x = 12.0;
+    let bar_y = 60.0;
+    
+    let fill_pct = (world.angry_points as f32 / world.max_angry_points as f32).clamp(0.0, 1.0);
+    d.draw_rectangle_lines_ex(Rectangle::new(bar_x, bar_y, bar_w, bar_h), 2.0, config::COLOR_ACCENT_BORDER);
+    d.draw_rectangle(bar_x as i32 + 2, bar_y as i32 + 2, ((bar_w - 4.0) * fill_pct) as i32, (bar_h - 4.0) as i32, Color::RED);
+    d.draw_text("Angry", bar_x as i32, (bar_y - 20.0) as i32, 16, config::COLOR_ACCENT_TEXT);
+
+    // Giant Cat
+    if let Some(y) = world.giant_cat_y {
+         let scale = config::CRYING_CAT_SCALE;
+         let frame_w = config::CRYING_CAT_FRAME_W;
+         let frame_h = config::CRYING_CAT_FRAME_H;
+         
+         let source = Rectangle {
+             x: world.giant_cat_frame as f32 * frame_w,
+             y: 0.0,
+             width: frame_w,
+             height: frame_h,
+         };
+
+         let dest_w = frame_w * scale;
+         let dest_h = frame_h * scale;
+         let dest_x = (d.get_screen_width() as f32 - dest_w) / 2.0;
+
+         let dest = Rectangle {
+             x: dest_x,
+             y: y,
+             width: dest_w,
+             height: dest_h,
+         };
+
+         d.draw_texture_pro(
+            crying_cat_texture,
+            source,
+            dest,
+            Vector2::new(0.0, 0.0),
+            0.0,
+            Color::WHITE
+         );
     }
 }
