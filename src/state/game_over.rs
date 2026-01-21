@@ -48,6 +48,8 @@ impl GameOverState {
         font: &WeakFont,
     ) -> GameOverAction {
         ui::draw_menu_background(d, screen_w, screen_h);
+        // Draw semi-transparent overlay instead so we can see the catastrophe
+        // d.draw_rectangle(0, 0, screen_w as i32, screen_h as i32, Color::new(0, 0, 0, 150));
 
         let title = "Game Over";
         let title_size = 40.0;

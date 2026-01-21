@@ -82,7 +82,8 @@ pub const CRYING_CAT_FRAME_W: f32 = 64.0;
 pub const CRYING_CAT_FRAME_H: f32 = 52.0;
 pub const CRYING_CAT_FRAMES: usize = 4;
 pub const CRYING_CAT_FPS: f32 = 8.0; 
-pub const CRYING_CAT_SCALE: f32 = 12.0;
+pub const CRYING_CAT_SCALE: f32 = 10.0;
+pub const GIANT_CAT_LANDED_DELAY: f32 = 2.0;
 
 pub const DEVIL_EXPLODE_ANIM_DURATION: f32 = 0.9;
 pub const DEVIL_EFFECT_MESSAGE_DURATION: f32 = 2.4;

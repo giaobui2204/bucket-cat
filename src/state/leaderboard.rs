@@ -113,8 +113,8 @@ impl LeaderboardState {
                 config::COLOR_ACCENT_TEXT,
             );
         } else {
-            let start_y = 120.0;
-            let line_height = 30.0;
+            let start_y = 125.0;
+            let line_height = 27.0;
             let score_font_size = 22.0;
 
             for (i, entry) in self.high_scores.iter().enumerate() {
@@ -135,7 +135,7 @@ impl LeaderboardState {
 
         let back_rect = Rectangle {
             x: (screen_w - 180.0) / 2.0,
-            y: screen_h - 80.0,
+            y: screen_h - 70.0,
             width: 180.0,
             height: 48.0,
         };

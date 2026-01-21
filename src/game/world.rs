@@ -26,6 +26,7 @@ pub struct World {
     pub giant_cat_y: Option<f32>,
     pub giant_cat_frame: usize,
     giant_cat_anim_timer: f32,
+    giant_cat_landed_timer: f32,
     pub game_over_trigger: bool,
 }
 
@@ -47,6 +48,7 @@ impl World {
             max_angry_points: initial_max_angry,
             giant_cat_y: None,
             giant_cat_frame: 0,
+            giant_cat_landed_timer: 0.0,
             giant_cat_anim_timer: 0.0,
             game_over_trigger: false,
         }
@@ -62,18 +64,37 @@ impl World {
     ) {
         if let Some(y) = self.giant_cat_y {
             let speed = config::GIANT_CAT_SPEED;
-            let new_y = y + speed * dt;
-            self.giant_cat_y = Some(new_y);
+            let target_y = screen_h - (config::CRYING_CAT_FRAME_H * config::CRYING_CAT_SCALE);
             
-            // Animate Giant Cat
-            self.giant_cat_anim_timer += dt;
-            if self.giant_cat_anim_timer >= 1.0 / config::CRYING_CAT_FPS {
-                self.giant_cat_anim_timer = 0.0;
-                self.giant_cat_frame = (self.giant_cat_frame + 1) % config::CRYING_CAT_FRAMES;
-            }
-
-            if new_y > screen_h { 
-                self.game_over_trigger = true;
+            // Move if we haven't reached the target
+            if y < target_y {
+                let new_y = y + speed * dt;
+                // clamp
+                let final_y = if new_y > target_y { target_y } else { new_y };
+                self.giant_cat_y = Some(final_y);
+                
+                // Animate Giant Cat while moving
+                self.giant_cat_anim_timer += dt;
+                if self.giant_cat_anim_timer >= 1.0 / config::CRYING_CAT_FPS {
+                    self.giant_cat_anim_timer = 0.0;
+                    self.giant_cat_frame = (self.giant_cat_frame + 1) % config::CRYING_CAT_FRAMES;
+                }
+                
+                if final_y >= target_y {
+                    // self.game_over_trigger = true;
+                    // Start timer
+                    self.giant_cat_landed_timer += dt;
+                    if self.giant_cat_landed_timer >= config::GIANT_CAT_LANDED_DELAY {
+                        self.game_over_trigger = true;
+                    }
+                }
+            } else {
+                // Ensure we stay at target
+                self.giant_cat_y = Some(target_y);
+                self.giant_cat_landed_timer += dt;
+                if self.giant_cat_landed_timer >= config::GIANT_CAT_LANDED_DELAY {
+                    self.game_over_trigger = true;
+                }
             }
             return;
         }

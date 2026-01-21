@@ -246,6 +246,19 @@ pub fn run() {
                 }
             }
             Screen::GameOver => {
+                 d.clear_background(Color::BLACK);
+                 /* 
+                 render::draw_world(
+                    &mut d,
+                    &world,
+                    &bucket_texture,
+                    &normal_texture,
+                    &angel_texture,
+                    &devil_texture, 
+                    &crying_cat_texture,
+                );
+                */
+
                  match game_over.draw(&mut d, screen_w, screen_h, mouse, clicked, &font) {
                     GameOverAction::Submit => {
                         leaderboard.reload();
