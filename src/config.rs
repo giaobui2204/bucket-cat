@@ -69,6 +69,21 @@ pub const DEVIL_SIZE_SMALL_SCALE: f32 = 0.7;
 pub const DEVIL_SIZE_LARGE_SCALE: f32 = 1.3;
 pub const DEVIL_SCORE_MULTIPLIER_DURATION: f32 = 8.0;
 pub const DEVIL_MUSIC_SWAP_DURATION: f32 = 10.0;
+
+// angry cat mechanism
+pub const ANGRY_BAR_MAX_WIDTH: f32 = 200.0;
+pub const ANGRY_BAR_HEIGHT: f32 = 20.0;
+pub const ANGRY_BAR_MIN_MAX: i32 = 15;
+pub const ANGRY_BAR_MAX_MAX: i32 = 25;
+pub const ANGRY_PENALTY_NORMAL: i32 = 1;
+pub const ANGRY_PENALTY_ANGEL: i32 = 3;
+pub const GIANT_CAT_SPEED: f32 = 300.0;
+pub const CRYING_CAT_FRAME_W: f32 = 64.0;
+pub const CRYING_CAT_FRAME_H: f32 = 52.0;
+pub const CRYING_CAT_FRAMES: usize = 4;
+pub const CRYING_CAT_FPS: f32 = 8.0; 
+pub const CRYING_CAT_SCALE: f32 = 12.0;
+
 pub const DEVIL_EXPLODE_ANIM_DURATION: f32 = 0.9;
 pub const DEVIL_EFFECT_MESSAGE_DURATION: f32 = 2.4;
 

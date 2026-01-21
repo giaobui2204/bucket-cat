@@ -2,6 +2,7 @@ use raylib::prelude::*;
 use raylib::audio::RaylibAudio;
 
 use crate::config;
+use crate::rng;
 use crate::input::Input;
 use crate::game::world::World;
 use crate::game::effects::MusicMode;
@@ -45,6 +46,9 @@ pub fn run() {
     let logo_texture = rl
         .load_texture(&thread, "src/assets/UI/bucket-logo.png")
         .expect("load logo texture");
+    let crying_cat_texture = rl
+        .load_texture(&thread, "src/assets/cat/crying_cat.png")
+        .expect("load crying cat texture");
     let music_default = audio
         .new_music("src/assets/sound_effects/sakura-default-music.mp3")
         .expect("load default music");
@@ -95,6 +99,10 @@ pub fn run() {
             } else {
                 let input = Input::gather(&rl);
                 world.update(&rl, input, dt, screen_w, screen_h);
+                if world.game_over_trigger {
+                    game_over.set_score(world.score());
+                    screen = Screen::GameOver;
+                }
             }
         }
         
@@ -197,6 +205,7 @@ pub fn run() {
                     &normal_texture,
                     &angel_texture,
                     &devil_texture,
+                    &crying_cat_texture,
                 );
                 
                 // Draw Pause Button
@@ -220,6 +229,7 @@ pub fn run() {
                 render::draw_world(
                     &mut d,
                     &world,
+                    &crying_cat_texture,
                     &bucket_texture,
                     &normal_texture,
                     &angel_texture,
@@ -249,7 +259,8 @@ pub fn run() {
 }
 
 fn create_world(screen_w: f32, screen_h: f32, bucket_texture: &Texture2D) -> World {
-    let mut world = World::new(screen_w, screen_h);
+    let max_angry = rng::get_random_value(config::ANGRY_BAR_MIN_MAX, config::ANGRY_BAR_MAX_MAX);
+    let mut world = World::new(screen_w, screen_h, max_angry);
     let bucket_frame_w =
         bucket_texture.width as f32 / config::BUCKET_FRAME_COLS as f32 * config::BUCKET_DRAW_SCALE;
     let bucket_frame_h = bucket_texture.height as f32 / config::BUCKET_FRAME_ROWS as f32
