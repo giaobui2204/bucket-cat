@@ -126,6 +126,9 @@ pub fn draw_world(
     d.draw_rectangle_lines_ex(Rectangle::new(bar_x, bar_y, bar_w, bar_h), 2.0, config::COLOR_ACCENT_BORDER);
     d.draw_rectangle(bar_x as i32 + 2, bar_y as i32 + 2, ((bar_w - 4.0) * fill_pct) as i32, (bar_h - 4.0) as i32, Color::RED);
     d.draw_text("Angry", bar_x as i32, (bar_y - 20.0) as i32, 16, config::COLOR_ACCENT_TEXT);
+    
+    let pct_text = format!("{}%", (fill_pct * 100.0) as i32);
+    d.draw_text(&pct_text, (bar_x + bar_w + 8.0) as i32, bar_y as i32, 20, config::COLOR_ACCENT_TEXT);
 
     // Giant Cat
     if let Some(y) = world.giant_cat_y {
