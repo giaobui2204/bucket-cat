@@ -48,9 +48,23 @@ pub fn run() {
     let music_default = audio
         .new_music("src/assets/sound_effects/sakura-default-music.mp3")
         .expect("load default music");
-    let music_alt = audio
-        .new_music("src/assets/sound_effects/coffee-time-bgm.mp3")
-        .expect("load alternate music");
+    
+    let alt_files = [
+        "coffee-time-bgm.mp3",
+        "chipi_chapa.mp3",
+        "happy_cat.mp3",
+        "maxwell_cat.mp3",
+        "rickroll.mp3",
+        "uiia_cat.mp3",
+    ];
+    let mut music_alt_list = Vec::new();
+    for file in alt_files.iter() {
+        music_alt_list.push(
+            audio
+                .new_music(&format!("src/assets/sound_effects/{}", file))
+                .expect("load alternate music"),
+        );
+    }
 
     let mut screen = Screen::Menu;
     let mut menu = MenuState::new();
@@ -94,29 +108,51 @@ pub fn run() {
             if !music_playing {
                 match desired {
                     MusicMode::Default => music_default.play_stream(),
-                    MusicMode::Alternate => music_alt.play_stream(),
+                    MusicMode::Alternate(idx) => {
+                        let len = music_alt_list.len();
+                        if let Some(m) = music_alt_list.get_mut(idx % len) {
+                            m.play_stream();
+                        }
+                    }
                 }
                 current_music = desired;
                 music_playing = true;
             } else if desired != current_music {
                 match current_music {
                     MusicMode::Default => music_default.stop_stream(),
-                    MusicMode::Alternate => music_alt.stop_stream(),
+                    MusicMode::Alternate(idx) => {
+                         let len = music_alt_list.len();
+                         if let Some(m) = music_alt_list.get_mut(idx % len) {
+                            m.stop_stream();
+                        }
+                    }
                 }
                 match desired {
                     MusicMode::Default => music_default.play_stream(),
-                    MusicMode::Alternate => music_alt.play_stream(),
+                    MusicMode::Alternate(idx) => {
+                         let len = music_alt_list.len();
+                         if let Some(m) = music_alt_list.get_mut(idx % len) {
+                            m.play_stream();
+                        }
+                    }
                 }
                 current_music = desired;
             }
 
             match current_music {
                 MusicMode::Default => music_default.update_stream(),
-                MusicMode::Alternate => music_alt.update_stream(),
+                MusicMode::Alternate(idx) => {
+                     let len = music_alt_list.len();
+                     if let Some(m) = music_alt_list.get_mut(idx % len) {
+                        m.update_stream();
+                    }
+                }
             }
         } else if music_playing {
             music_default.stop_stream();
-            music_alt.stop_stream();
+            for m in music_alt_list.iter_mut() {
+                m.stop_stream();
+            }
             music_playing = false;
             current_music = MusicMode::Default;
         }
