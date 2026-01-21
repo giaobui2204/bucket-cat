@@ -13,7 +13,6 @@ pub const COLOR_ACCENT_BORDER: Color = Color::new(233, 130, 180, 255);
 
 pub const COLOR_LIGHT_BG: Color = Color::new(255, 224, 240, 255);
 pub const COLOR_LIGHT_HOVER: Color = Color::new(255, 233, 245, 255);
-pub const COLOR_LIGHT_TEXT_SUB: Color = Color::new(139, 79, 110, 255);
 
 pub const COLOR_MENU_BG_START: Color = Color::new(255, 240, 246, 255);
 pub const COLOR_MENU_BG_END: Color = Color::new(255, 214, 232, 255);
@@ -68,7 +67,7 @@ pub const DEVIL_SIZE_EFFECT_DURATION: f32 = 6.0;
 pub const DEVIL_SIZE_SMALL_SCALE: f32 = 0.7;
 pub const DEVIL_SIZE_LARGE_SCALE: f32 = 1.3;
 pub const DEVIL_SCORE_MULTIPLIER_DURATION: f32 = 8.0;
-pub const DEVIL_MUSIC_SWAP_DURATION: f32 = 10.0;
+
 
 // angry cat mechanism
 pub const ANGRY_BAR_MAX_WIDTH: f32 = 200.0;
@@ -77,7 +76,7 @@ pub const ANGRY_BAR_MIN_MAX: i32 = 15;
 pub const ANGRY_BAR_MAX_MAX: i32 = 25;
 pub const ANGRY_PENALTY_NORMAL: i32 = 1;
 pub const ANGRY_PENALTY_ANGEL: i32 = 3;
-pub const GIANT_CAT_SPEED: f32 = 300.0;
+pub const GIANT_CAT_SPEED: f32 = 210.0;
 pub const CRYING_CAT_FRAME_W: f32 = 64.0;
 pub const CRYING_CAT_FRAME_H: f32 = 52.0;
 pub const CRYING_CAT_FRAMES: usize = 4;
