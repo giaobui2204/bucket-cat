@@ -76,6 +76,9 @@ pub const ANGRY_BAR_MIN_MAX: i32 = 15;
 pub const ANGRY_BAR_MAX_MAX: i32 = 25;
 pub const ANGRY_PENALTY_NORMAL: i32 = 1;
 pub const ANGRY_PENALTY_ANGEL: i32 = 3;
+pub const DEVIL_MISS_STREAK_LIMIT: i32 = 5;
+pub const DEVIL_MISS_PENALTY: i32 = 1;
+
 pub const GIANT_CAT_SPEED: f32 = 210.0;
 pub const CRYING_CAT_FRAME_W: f32 = 64.0;
 pub const CRYING_CAT_FRAME_H: f32 = 52.0;

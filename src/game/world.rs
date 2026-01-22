@@ -28,6 +28,9 @@ pub struct World {
     giant_cat_anim_timer: f32,
     giant_cat_landed_timer: f32,
     pub game_over_trigger: bool,
+    
+    // Devil Streak
+    missed_devil_streak: i32,
 }
 
 impl World {
@@ -51,6 +54,7 @@ impl World {
             giant_cat_landed_timer: 0.0,
             giant_cat_anim_timer: 0.0,
             game_over_trigger: false,
+            missed_devil_streak: 0,
         }
     }
 
@@ -137,12 +141,23 @@ impl World {
                  match obj.kind() {
                      CatKind::Normal => self.angry_points += config::ANGRY_PENALTY_NORMAL,
                      CatKind::Angel => self.angry_points += config::ANGRY_PENALTY_ANGEL,
+                     CatKind::Devil => {
+                         // Consecutive devil miss logic
+                         self.missed_devil_streak += 1;
+                         if self.missed_devil_streak > 0 && self.missed_devil_streak % config::DEVIL_MISS_STREAK_LIMIT == 0 {
+                             self.angry_points += config::DEVIL_MISS_PENALTY;
+                         }
+                     },
                      _ => {}
                  }
             }
         }
         self.objects = remaining;
         for kind in caught {
+             // Reset streak specifically when a Devil cat is caught
+             if let CatKind::Devil = kind {
+                 self.missed_devil_streak = 0;
+             }
             self.handle_catch(kind, rl);
         }
 
