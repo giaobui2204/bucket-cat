@@ -12,6 +12,28 @@ use crate::state::menu::{MenuAction, MenuState};
 use crate::state::pause::{PauseState, PauseAction};
 use crate::state::leaderboard::{LeaderboardState, LeaderboardAction};
 use crate::state::game_over::{GameOverState, GameOverAction};
+use std::path::{Path, PathBuf};
+
+fn asset(rel: &str) -> String {
+    // 1. Try relative to the executable (for release builds)
+    if let Ok(exe) = std::env::current_exe() {
+        if let Some(exe_dir) = exe.parent() {
+            let path = exe_dir.join(rel);
+            if path.exists() {
+                return path.to_str().unwrap().to_string();
+            }
+        }
+    }
+
+    // 2. Try src/{rel} (for development with cargo run, if assets are in src/assets)
+    let src_path = Path::new("src").join(rel);
+    if src_path.exists() {
+        return src_path.to_str().unwrap().to_string();
+    }
+    
+    // 3. Fallback to assuming it's in CWD or handle absolute path
+    rel.to_string()
+}
 
 enum Screen {
     Menu,
@@ -32,28 +54,28 @@ pub fn run() {
 
     //access to the assets texture
     let bucket_texture = rl
-        .load_texture(&thread, "src/assets/cat/bucket.png")
+        .load_texture(&thread, &asset("assets/cat/bucket.png"))
         .expect("load bucket texture");
     let normal_texture = rl
-        .load_texture(&thread, "src/assets/cat/normalneko.png")
+        .load_texture(&thread, &asset("assets/cat/normalneko.png"))
         .expect("load normal neko texture");
     let angel_texture = rl
-        .load_texture(&thread, "src/assets/cat/angelneko.png")
+        .load_texture(&thread, &asset("assets/cat/angelneko.png"))
         .expect("load angel neko texture");
     let devil_texture = rl
-        .load_texture(&thread, "src/assets/cat/devilneko.png")
+        .load_texture(&thread, &asset("assets/cat/devilneko.png"))
         .expect("load devil neko texture");
     let logo_texture = rl
-        .load_texture(&thread, "src/assets/UI/bucket-logo.png")
+        .load_texture(&thread, &asset("assets/UI/bucket-logo.png"))
         .expect("load logo texture");
     let bg_texture = rl
-        .load_texture(&thread, "src/assets/UI/play_background.png")
+        .load_texture(&thread, &asset("assets/UI/play_background.png"))
         .expect("load background texture");
     let crying_cat_texture = rl
-        .load_texture(&thread, "src/assets/cat/crying_cat.png")
+        .load_texture(&thread, &asset("assets/cat/crying_cat.png"))
         .expect("load crying cat texture");
     let music_default = audio
-        .new_music("src/assets/sound_effects/sakura-default-music.mp3")
+        .new_music(&asset("assets/sound_effects/sakura-default-music.mp3"))
         .expect("load default music");
     
     let alt_files = [
@@ -68,7 +90,7 @@ pub fn run() {
     for file in alt_files.iter() {
         music_alt_list.push(
             audio
-                .new_music(&format!("src/assets/sound_effects/{}", file))
+                .new_music(&asset(&format!("assets/sound_effects/{}", file)))
                 .expect("load alternate music"),
         );
     }
