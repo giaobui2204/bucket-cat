@@ -208,17 +208,20 @@ impl World {
     }
 
     fn random_devil_effect(&self, rl: &RaylibHandle) -> DevilEffect {
+        let explode_roll = rl.get_random_value::<i32>(0..1000) as f32 / 1000.0;
+        if explode_roll < config::EXPLODE_RATE_IN_DEVIL {
+            return DevilEffect::BucketExplode;
+        }
+
         let effects = [
             DevilEffect::InvertControls,
             DevilEffect::BucketSmall,
             DevilEffect::BucketLarge,
             DevilEffect::MusicSwap,
-            DevilEffect::BucketExplode,
             DevilEffect::ScoreDouble,
             DevilEffect::ScoreTriple,
         ];
-        // Fix: get_random_value uses GetRandomValue(min, max) which is INCLUSIVE.
-        // So for an array of size 7 (indices 0..6), we must pass max=6.
+        // get_random_value uses an inclusive max; for 6 items, max index is 5.
         let max_index = effects.len() as i32 - 1;
         let index = rl.get_random_value::<i32>(0..max_index) as usize;
         effects[index]
